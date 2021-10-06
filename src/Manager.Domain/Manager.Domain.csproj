@@ -4,8 +4,4 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="fluentValidation" Version="10.3.3" />
-  </ItemGroup>
-
 </Project>
