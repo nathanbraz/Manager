@@ -7,7 +7,7 @@ namespace Manager.Core.Exceptions {
     
     internal List<string> _errors;
 
-    public List<string> Errors => _errors;
+    public IReadOnlyCollection<string> Errors => _errors;
 
     public DomainException() { }
 
