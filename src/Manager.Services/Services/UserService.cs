@@ -39,11 +39,11 @@ namespace Manager.Services.Services
 
     public async Task<UserDTO> Update(UserDTO userDTO)
     {
-       var userExists = await _userRepository.GetByEmail(userDTO.Email);
+       var userExists = await _userRepository.Get(userDTO.Id);
 
        if(userExists == null) 
        {
-           throw new DomainException("Já existe um usuário com este email.");
+           throw new DomainException("Não existe nenhum usuário com o id informado");
        }
 
        var user = _mapper.Map<User>(userDTO);

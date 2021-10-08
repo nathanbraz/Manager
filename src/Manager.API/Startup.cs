@@ -40,6 +40,7 @@ namespace Manager.API
             {
                 conf.CreateMap<User, UserDTO>().ReverseMap();
                 conf.CreateMap<CreateUserViewModel, UserDTO>().ReverseMap();
+                conf.CreateMap<UpdateUserViewModel, UserDTO>().ReverseMap();
             });
 
             services.AddSingleton(autoMapperConfig.CreateMapper());
