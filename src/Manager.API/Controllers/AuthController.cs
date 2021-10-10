@@ -39,7 +39,7 @@ namespace Manager.API.Controllers
                             TokenExpires = DateTime.UtcNow.AddHours(int.Parse(_configuration["Jwt:HoursToExpire"]))
                         }
                     });
-                }
+                } 
                 else
                 {
                     return StatusCode(401, Responses.UnautohrizedErrorMessage());
