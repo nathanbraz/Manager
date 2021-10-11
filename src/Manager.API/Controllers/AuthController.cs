@@ -1,7 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using Manager.API.Utilities;
 using Manager.API.Utilities.Token;
 using Manager.API.ViewModels;
+using Manager.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -11,23 +13,29 @@ namespace Manager.API.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration, ITokenGenerator tokenGenerator)
+        public AuthController(IConfiguration configuration, ITokenGenerator tokenGenerator, IUserService userService)
         {
         _configuration = configuration;
         _tokenGenerator = tokenGenerator;
+        _userService = userService;
         }
 
         [HttpPost]
         [Route("/api/v1/auth/login")]
-        public IActionResult Login([FromBody] LoginViewModel loginViewModel)
+        public async Task<IActionResult> Login([FromBody] LoginViewModel loginViewModel)
         {
             try
             {
-                var tokenLogin = _configuration["Jwt:Login"];
-                var tokenPassword = _configuration["Jwt:Password"];
+                var user = await _userService.GetByEmail(loginViewModel.Login);
 
-                if(loginViewModel.Login == tokenLogin && loginViewModel.Password == tokenPassword)
+                if(user == null)
+                {
+                    return StatusCode(401, Responses.UnautohrizedErrorMessage());
+                }
+
+                if(loginViewModel.Login == user.Email && loginViewModel.Password == user.Password)
                 {
                     return Ok(new ResultViewModel
                     {
@@ -35,8 +43,8 @@ namespace Manager.API.Controllers
                         Success = true,
                         Data = new 
                         {
-                            Token = _tokenGenerator.GenerateToken(),
-                            TokenExpires = DateTime.UtcNow.AddHours(int.Parse(_configuration["Jwt:HoursToExpire"]))
+                            Token = _tokenGenerator.GenerateToken(user.Email),
+                            TokenExpires = DateTime.UtcNow.AddMinutes(1)
                         }
                     });
                 } 

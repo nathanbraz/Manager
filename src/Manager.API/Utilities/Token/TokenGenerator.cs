@@ -17,7 +17,7 @@ namespace Manager.API.Utilities.Token
       _configuration = configuration;
     }
 
-    public string GenerateToken()
+    public string GenerateToken(string login)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -27,10 +27,10 @@ namespace Manager.API.Utilities.Token
         {
           Subject = new ClaimsIdentity(new Claim[]
           {
-              new Claim(ClaimTypes.Name, _configuration["Jwt:Login"]),
+              new Claim(ClaimTypes.Name, login),
               new Claim(ClaimTypes.Role, "User")
           }),
-          Expires = DateTime.UtcNow.AddHours(int.Parse(_configuration["Jwt:HoursToExpire"])),
+          Expires = DateTime.UtcNow.AddMinutes(1),
           SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
